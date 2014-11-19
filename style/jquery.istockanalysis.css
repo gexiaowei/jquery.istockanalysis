@@ -1,0 +1,57 @@
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+div.istock {
+    width: 100%;
+    font: 16px/21px "微软雅黑";
+    padding-left: 10px;
+    position: relative;
+    clear: both;
+    box-sizing: border-box;
+}
+
+div.istocktype {
+    position: fixed;
+    background-image: url("../images/icon_buy.png");
+    background-size: contain;
+    width: 26px;
+    height: 26px;
+    margin-top: 23px;
+}
+
+div.istock ul {
+    margin: 0 0 0 13px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+    border-left: 1px solid #cccccc;
+    width: 200px;
+    list-style: none;
+    float: left;
+}
+
+div.istock ul li {
+    width: 100%;
+}
+
+div.istock ul li.date {
+    font-size: 0.8em;
+    color: #CCCCCC;
+}
+
+div.istock ul li.item {
+    font-size: 1em;
+    color: #8f8f8f;
+}
+
+div.istock ul li.font {
+    font-size: 0.8em;
+}
+
+div.istock ul a {
+    color: #ff9c00;
+    text-decoration: none;
+}

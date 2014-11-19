@@ -2,16 +2,34 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
     <title>THis is a test</title>
     <link rel="stylesheet" href="../style/jquery.istockanalysis.css"/>
+    <style>
+
+    </style>
     <script src="../script/jquery-1.11.1.js"></script>
     <script src="../script/jquery.istockanalysis.js"></script>
     <script>
         $(document).ready(function () {
-            var data = '卖出股票： <stock name="浪潮信息"  code="21000977" /> \n卖出价格：40.12 \n卖出数量：346 \n成交金额：13881.52 \n手续费：11.11 \n印花税：13.88 \n';
+            var data = {
+                content: '卖出股票： <stock name="浪潮信息"  code="21000977" /> \n卖出价格：40.12 \n卖出数量：346 \n成交金额：13881.52 \n手续费：11.11 \n印花税：13.88 \n<font text="来自 模拟炒股" style="" color="#1270ac" size="14dp" />',
+                ctime: 1415703116505,
+                matchid: null,
+                share: 0,
+                stype: 8,
+                tstockid: 1415703116602236,
+                type: 10
+            };
             console.log(data);
             $('#istock').analysisStock(data);
-        });
+        })
+        ;
     </script>
 </head>
 <body>
