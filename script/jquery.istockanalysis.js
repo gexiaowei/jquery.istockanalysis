@@ -78,6 +78,21 @@
             dom.text(el.text());
             return dom;
         },
+        getTypeClass = function (type) {
+            var className;
+            switch (type) {
+                case 7:
+                    className = 'type_buy';
+                    break;
+                case 8:
+                    className = 'type_sell';
+                    break;
+                default :
+                    className = 'type_unknow';
+                    break;
+            }
+            return className;
+        },
         /**
          * 默认设置
          * @type {{item: Function, stock: Function, font: Function, unknow: Function}}
@@ -118,9 +133,10 @@
             }
         });
         this.addClass('istock');
-        $('<div/>', {class: 'istocktype'}).appendTo(this);
+        var typeContainer = $('<div/>', {class: 'istocktype'}).appendTo(this);
+        typeContainer.addClass(getTypeClass(type));
         var istockContainer = $('<ul/>');
-        $('<li/>', {class: 'date'}).appendTo(istockContainer).text(time)
+        $('<li/>', {class: 'date'}).appendTo(istockContainer).text($.formatTime(time));
         istockContainer.appendTo(this);
         parents.push(istockContainer);
         loopElement(root);
@@ -133,7 +149,7 @@
      */
     $.fn.hasChildren = function () {
         return this.children().length > 0;
-    }
+    };
 
     /**
      * 循环调用
@@ -154,4 +170,51 @@
         parents.pop();
     };
 
+    /**
+     * 格式化时间轴显示时间
+     * @param time
+     * @returns {string}
+     */
+    $.formatTime = function (time) {
+        var serverTime = new Date(time),
+            currentTime = new Date();
+        // 往年或更早
+        if (currentTime.getFullYear() != serverTime.getFullYear()) {
+            return serverTime.getFullYear() + "-" + (serverTime.getMonth() + 1) + "-" + serverTime.getDate() + " " + serverTime.getHours() + "-" + serverTime.getMinutes();
+        }
+        // 当年度日期间隔
+        var dayInterval = currentTime.getDate() - serverTime.getDate();
+
+        // 今年更早的时间
+        if (dayInterval > 2) {
+            return (serverTime.getMonth() + 1) + "-" + serverTime.getDate() + " " + serverTime.getHours() + ":" + serverTime.getMinutes();
+        }
+        // 前天
+        if (dayInterval == 2) {
+            return " 前天" + serverTime.getHours() + ":" + serverTime.getMinutes();
+        }
+        // 昨天
+        if (dayInterval == 1) {
+            return " 昨天" + serverTime.getHours() + ":" + serverTime.getMinutes();
+        }
+        // 毫秒间隔
+        var currentTimeMillis = currentTime.getTime();
+        var interval = currentTimeMillis - time;
+
+        // 一小时前
+        if (interval >= 3600000) {
+            return serverTime.getHours() + ":" + serverTime.getMinutes();
+        } else {
+            if (interval < 3600000 && interval > 60000) {
+
+                var intervalMinuter = (interval / 60000).toFixed(0);
+                if (intervalMinuter < 1) {
+                    intervalMinuter = 1;
+                }
+                return intervalMinuter + "分钟前";
+            } else {
+                return "刚刚";
+            }
+        }
+    };
 })(jQuery);

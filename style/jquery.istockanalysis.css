@@ -15,11 +15,18 @@ div.istock {
 
 div.istocktype {
     position: fixed;
-    background-image: url("../images/icon_buy.png");
     background-size: contain;
     width: 26px;
     height: 26px;
     margin-top: 23px;
+}
+
+div.type_buy {
+    background-image: url("../images/icon_buy.png");
+}
+
+div.type_sell {
+    background-image: url("../images/icon_sell.png");
 }
 
 div.istock ul {
