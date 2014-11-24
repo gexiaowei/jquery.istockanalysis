@@ -84,7 +84,7 @@
                 case 7:
                     className = 'type_buy';
                     break;
-                case 8:
+                case 16:
                     className = 'type_sell';
                     break;
                 default :

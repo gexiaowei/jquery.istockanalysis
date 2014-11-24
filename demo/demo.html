@@ -10,29 +10,27 @@
     <meta name="format-detection" content="telephone=no">
     <title>THis is a test</title>
     <link rel="stylesheet" href="../style/jquery.istockanalysis.css"/>
-    <style>
-
-    </style>
     <script src="../script/jquery-1.11.1.js"></script>
+    <script src="../script/jquery.jhss.tool.js"></script>
     <script src="../script/jquery.istockanalysis.js"></script>
     <script>
         $(document).ready(function () {
-            var data = {
-                content: '卖出股票： <stock name="浪潮信息"  code="21000977" /> \n卖出价格：40.12 \n卖出数量：346 \n成交金额：13881.52 \n手续费：11.11 \n印花税：13.88 \n<font text="来自 模拟炒股" style="" color="#1270ac" size="14dp" />',
-                ctime: 1415703116505,
-                matchid: null,
-                share: 0,
-                stype: 8,
-                tstockid: 1415703116602236,
-                type: 10
-            };
-            console.log(data);
-            $('#istock').analysisStock(data);
-        })
-        ;
+            $.ajax({
+                url: 'http://220.181.47.36/istock/talkstock/tradetimeline/~8E78tE74oE74oE74nE4/~9Fb5pG89pFb5pGrFrF8ctFr5pF8c/~0IOHqHO7z/~8DL8/~3L-/~8FI',
+                success: function (text) {
+                    var result = JSON.parse(text).result;
+                    $(result).each(function (i, item) {
+                        console.log(item);
+                        $('<div/>').appendTo($('#istock')).analysisStock(item);
+                    });
+                }
+            });
+        });
     </script>
 </head>
 <body>
-<div id="istock"></div>
+
+
+
 </body>
 </html>
