@@ -750,46 +750,6 @@
     };
 
     /**
-     * 格式化排名
-     * @param   {String|Number} rank
-     * @returns {String}
-     */
-    function FormatRank(rank) {
-        if (typeof rank === 'string') {//把字符转换成数字
-            rank = parseInt(rank);
-        }
-        var rankStr;
-        if (rank == 0) {
-            rankStr = "";
-        } else if (rank > 99999 && rank <= 999999) {
-            rankStr = (Math.floor(rank / 10000)).toFixed(0) + "万+";
-        } else if (rank > 999999) {
-            rankStr = "100万+";
-        } else {
-            rankStr = rank.toFixed(0);//toFixed只能用于数字
-        }
-        return rankStr;
-    };
-
-    /**
-     * 从地址栏中获取参数
-     * @returns {Object}
-     */
-    function getParamsFromUrl() {
-        var paramstr = window.location.search,
-            params = new Object();
-        if (paramstr) {
-            $(paramstr.substr(1).split('&')).each(function (i, item) {
-                var kv = item.split('='),
-                    key = kv[0],
-                    value = kv[1];
-                params[key] = value;
-            });
-        }
-        return params;
-    };
-
-    /**
      * 获取本地存储对象
      * @param {String} key
      */
@@ -845,6 +805,71 @@
         }
     };
 
+    /**
+     * 格式化代码
+     * @param {Number} num 大数据
+     * @returns {String}
+     */
+    function BigNumberFormat(num) {
+        var num = num.toFixed(2),
+            unit = '',
+            absnum = Math.abs(num);
+        if (absnum < 10000) {
+            num = num.toFixed(0);
+        } else if (absnum >= 10000 && absnum < 100000000) {
+            num = (num / 10000).toFixed(1);
+            unit = '万';
+        } else if (absnum >= 100000000 && absnum < 100000000000) {
+            num = (num / 100000000).toFixed(2);
+            unit = '亿';
+        } else {
+            num = (num / 100000000000).toFixed(2);
+            unit = '千亿';
+        }
+        return num + unit;
+    }
+
+    /**
+     * 格式化排名
+     * @param   {String|Number} rank
+     * @returns {String}
+     */
+    function FormatRank(rank) {
+        if (typeof rank === 'string') {//把字符转换成数字
+            rank = parseInt(rank);
+        }
+        var rankStr;
+        if (rank == 0) {
+            rankStr = "";
+        } else if (rank > 99999 && rank <= 999999) {
+            rankStr = (Math.floor(rank / 10000)).toFixed(0) + "万+";
+        } else if (rank > 999999) {
+            rankStr = "100万+";
+        } else {
+            rankStr = rank.toFixed(0);//toFixed只能用于数字
+        }
+        return rankStr;
+    };
+
+    /**
+     * 从地址栏中获取参数
+     * @returns {Object}
+     */
+    function getParamsFromUrl() {
+        var paramstr = window.location.search,
+            params = new Object();
+        if (paramstr) {
+            $(paramstr.substr(1).split('&')).each(function (i, item) {
+                var kv = item.split('='),
+                    key = kv[0],
+                    value = kv[1];
+                params[key] = value;
+            });
+        }
+        return params;
+    };
+
+
     $.extend({
         galhttprequset: function (url, params, callback) {
             return new GalHttpequest(url, params, callback);
@@ -859,6 +884,7 @@
             return new localData(key)
         },
         formatRank: FormatRank,
+        bigNumberFormat: BigNumberFormat,
         getParams: getParamsFromUrl
 
     });
