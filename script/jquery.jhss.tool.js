@@ -498,6 +498,7 @@
     };
 
     $.extend({
+        galhttprequset: GalHttpequest,
         packet: Packet,
         base64: function () {
             return new Base64()
