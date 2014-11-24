@@ -5,6 +5,7 @@
  */
 ;
 (function ($) {
+    "use strict";
     /**
      *
      * @param {String} url      请求地址
@@ -22,23 +23,6 @@
         this.data = params.data;
         this.callback = callback;
         console.log('请求URL:' + url_temp);
-        switch (params[type]) {
-            case 1:
-                this.request();
-                break;
-            case 2:
-                this.requestPacket();
-                break;
-            case 3:
-                this.submitData();
-                break;
-            case 4:
-                this.submitForm();
-                break;
-            default :
-                this.request();
-                break;
-        }
     }
 
     GalHttpequest.prototype = {
@@ -46,56 +30,194 @@
          * 普通请求网络
          */
         request: function () {
-            var options = {
-                dataType: 'text',
-                type: "GET",
-                crossDomain: true,
-                url: url,
-                headers: getCommonHeader(),
-                success: function (text) {
-                    if (!text) {
+            var callback = this.callback,
+                options = {
+                    dataType: 'json',
+                    type: "GET",
+                    crossDomain: true,
+                    url: this.url,
+                    headers: getCommonHeader(),
+                    success: function (text) {
+                        console.log(text);
+                        if (!text) {
+                            callback.error({
+                                status: "-0001",
+                                message: "回调文本为空"
+                            });
+                            return;
+                        }
+                        var data = analyReturnInfo(text);
+                        if (data && data.status == "0000") {
+                            callback.succeed(data);
+                        } else if (data.status == "0101") {
+                            callback.error(data);
+                        } else {
+                            callback.error(data);
+                        }
+                    },
+                    error: function (error) {
                         callback.error({
-                            status: "-0001",
-                            message: "回调文本为空"
+                            status: error.status,
+                            message: error.statusText
                         });
                     }
-                    var data = getObjectFromText(text);
-                    if (data && data.status == "0000") {
-                        callback.succeed(data);
-                    } else if (data.status == "0101") {
-                        callback.error(data);
-                    } else {
-                        callback.error(data);
-                    }
-                },
-                error: function () {
-                    callback.error({
-                        status: "-0002",
-                        message: "请求错误"
-                    });
-                }
-            };
+                };
             $.ajax(options);
         },
         /**
          * 请求Packet的网络地址
          */
         requestPacket: function () {
-
+            var callback = this.callback,
+                options = {
+                    dataType: 'text',
+                    crossDomain: true,
+                    url: this.url,
+                    headers: getCommonHeader(),
+                    beforeSend: function (xhr) {
+                        xhr.overrideMimeType("text/plain; charset=x-user-defined");
+                    },
+                    success: function (data) {
+                        var buff = [];
+                        for (var i = 0, j = data.length; i < j; i++) {
+                            buff.push(data[i].charCodeAt(0));
+                        }
+                        var len = readInt(buff),
+                            seq = readInt(buff),
+                            operatecode = readInt(buff),
+                            packet = $.packet(operatecode, seq);
+                        packet.input(buff);
+                        try {
+                            packet.decode();
+                        } catch (error) {
+                            callback.error({
+                                status: "-0002",
+                                message: '数据异常'
+                            });
+                        }
+                        var info = packet.getValue();
+                        console.log(info);
+                        if (info.status.status == '0000' || info.status[0].status == '0000') {
+                            callback.succeed(info);
+                        } else {
+                            callback.error(info);
+                        }
+                    },
+                    error: function (error) {
+                        callback.error({
+                            status: error.status,
+                            message: error.statusText
+                        });
+                    }
+                };
+            $.ajax(options);
         },
         /**
          * post提交数据
          */
         submitData: function () {
-
+            var callback = this.callback,
+                options = {
+                    type: "POST",
+                    url: this.url,
+                    headers: getCommonHeader(),
+                    data: this.data,
+                    success: function (result) {
+                        if (!result) {
+                            callback.error({
+                                status: "-0001",
+                                message: "回调文本为空"
+                            });
+                        }
+                        result = analyReturnInfo(result);
+                        if (result.status === '0000') {
+                            callback.succeed(result);
+                        } else {
+                            callback.error(result);
+                        }
+                    },
+                    error: function (error) {
+                        callback.error({
+                            status: error.status,
+                            message: error.statusText
+                        });
+                    }
+                };
+            $.ajax(options);
         },
         /**
          * 提交Form数据
          */
         submitForm: function () {
-
+            var key,
+                callback = this.callback,
+                fd = new FormData(),
+                data = this.data,
+                base64 = $.base64();
+            for (key in data) {
+                fd.append(key, base64.encode(data[key]));
+            }
+            var options = {
+                url: this.url,
+                data: fd,
+                headers: getCommonHeader(),
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                success: function (result) {
+                    if (!result) {
+                        callback.error({
+                            status: "-0001",
+                            message: "回调文本为空"
+                        });
+                    }
+                    result = analyReturnInfo(result);
+                    if (result.status === '0000') {
+                        callback.succeed(result);
+                    } else {
+                        callback.error(result);
+                    }
+                },
+                error: function (error) {
+                    callback.error({
+                        status: error.status,
+                        message: error.statusText
+                    });
+                }
+            };
+            $.ajax(options);
         }
+    };
+
+    /**
+     * 获取基础header
+     * @returns {Object}
+     */
+    function getCommonHeader() {
+        return {
+            ak: '0170010010000',
+            userid: '-1',
+            sessionid: '0110001'
+        };
     }
+
+    /**
+     * 解析网络返回信息
+     * @param   {String||Object} 网络返回信息
+     * @returns {Object}
+     */
+    function analyReturnInfo(info) {
+        //如果是Oject直接返回
+        if (typeof info === 'object') {
+            return info;
+        }
+        //需要Base64解密
+        var text = info;
+        if (text.index('~') === 0) {
+            text = $.base64().decode(text);
+        }
+        return JSON.parse(text);
+    };
 
     /**
      * 从字符串中获取Byte数组
@@ -109,7 +231,7 @@
             arr.push(utf8.charCodeAt(i));
         }
         return arr;
-    }
+    };
 
     /**
      * 从Byte数组中获取字符串
@@ -123,7 +245,16 @@
         }
         str = decodeURIComponent(str);
         return str;
-    }
+    };
+
+    /**
+     * 读取packet长度
+     * @param buff
+     * @returns {number}
+     */
+    function readInt(buff) {
+        return (buff.shift() << 24) | (buff.shift() << 16) | (buff.shift() << 8) | (buff.shift() & 0xff);
+    };
 
     /**
      * 加密base64加密的数据
@@ -498,10 +629,14 @@
     };
 
     $.extend({
-        galhttprequset: GalHttpequest,
-        packet: Packet,
+        galhttprequset: function (url, params, callback) {
+            return new GalHttpequest(url, params, callback);
+        },
+        packet: function (operatecode, seq) {
+            return new Packet(operatecode, seq);
+        },
         base64: function () {
-            return new Base64()
+            return new Base64();
         }
     })
 

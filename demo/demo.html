@@ -8,29 +8,53 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
-    <title>THis is a test</title>
-    <link rel="stylesheet" href="../style/jquery.istockanalysis.css"/>
-    <script src="../script/jquery-1.11.1.js"></script>
-    <script src="../script/jquery.jhss.tool.js"></script>
-    <script src="../script/jquery.istockanalysis.js"></script>
+    <title>JHSS jQuery Plugin Demo</title>
+    <link rel="stylesheet" href="demo.css"/>
+    <script src="../src/script/jquery-1.11.1.js"></script>
+    <script src="../src/script/jquery.jhss.tool.js"></script>
+    <script src="../src/script/jquery.jhss.ui.js"></script>
     <script>
         $(document).ready(function () {
-            $.ajax({
-                url: 'http://220.181.47.36/istock/talkstock/tradetimeline/~8E78tE74oE74oE74nE4/~9Fb5pG89pFb5pGrFrF8ctFr5pF8c/~0IOHqHO7z/~8DL8/~3L-/~8FI',
-                success: function (text) {
-                    var result = JSON.parse(text).result;
-                    $(result).each(function (i, item) {
-                        console.log(item);
-                        $('<div/>').appendTo($('#istock')).analysisStock(item);
-                    });
-                }
+            $('#galhttprequset_1').click(function () {
+                $.galhttprequset('http://220.181.47.36/istock/talkstock/tradetimeline/{ak}/{sessionid}/{uid}/{matchid}/{fromtid}/{reqnum}', {
+                    ak: '0170010010000',
+                    sessionid: '20141124135249693492',
+                    uid: '693492',
+                    matchid: '1',
+                    fromtid: '0',
+                }, {
+                    succeed: function (data) {
+                        $('#result_gal').text(JSON.stringify(data));
+                    },
+                    error: function (error) {
+                        $('#result_gal').text(JSON.stringify(error));
+                    }
+                }).request();
+            });
+
+            $('#galhttprequset_2').click(function () {
+                $.galhttprequset('http://220.181.47.36/quote/stocklist/board/stock/curpricewithtop5?code={code}', {
+                    code: '10000001',
+                    type: 2
+                }, {
+                    succeed: function (data) {
+                        $('#result_gal').text(JSON.stringify(data));
+                    },
+                    error: function (error) {
+                        $('#result_gal').text(JSON.stringify(error));
+                    }
+                }).requestPacket();
             });
         });
     </script>
 </head>
 <body>
-
-
-
+<div>使用$.galhttprequset进行网络请求</div>
+<div class="buttons"></div>
+<button id="galhttprequset_1" class="red">普通Get请求</button>
+<button id="galhttprequset_2" class="red">PacketGet请求</button>
+<button id="galhttprequset_3" class="red">PostData请求</button>
+<button id="galhttprequset_4" class="red">Form表单提交</button>
+<div id="result_gal"></div>
 </body>
 </html>

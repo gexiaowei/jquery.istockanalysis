@@ -1,0 +1,42 @@
+html, body {
+    width: 100%;
+    font-family: "Microsoft YaHei" ! important;
+    padding: 10px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+* {
+    margin-top: 10px;
+}
+
+div.buttons {
+    width: 100%;
+    float: left;
+}
+
+button {
+    width: 20%;
+    height: 40px;
+    border: 0;
+    margin: 0 auto;
+    font-size: 1em;
+    color: #ffffff;
+    outline: none;
+}
+
+button.red {
+    background-color: rgb(232, 62, 74);
+}
+
+button.blue {
+    background-color: rgb(48, 108, 182);
+}
+
+button.yellow {
+    background-color: rgb(242, 192, 59);
+}
+
+button.green {
+    background-color: rgb(33, 172, 67);
+}
