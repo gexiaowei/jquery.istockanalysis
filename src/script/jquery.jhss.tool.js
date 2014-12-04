@@ -211,6 +211,7 @@
                         try {
                             packet.decode();
                         } catch (error) {
+                            console.error(error)
                             callback.error({
                                 status: "-0002",
                                 message: '数据异常'
@@ -334,11 +335,24 @@
         }
         //需要Base64解密
         var text = info;
-        if (text.index('~') === 0) {
+        if (text.indexOf('~') === 0) {
             text = $.base64().decode(text);
         }
         return JSON.parse(text);
     };
+
+    /**
+     * int转为float
+     * @param   {Integer} i
+     * @returns {FLoat}
+     */
+    function intBitsToFloat(i) {
+        var int8 = new Int8Array(4); //[0,0,0,0]
+        var int32 = new Int32Array(int8.buffer, 0, 1); //0
+        var float32 = new Float32Array(int8.buffer, 0, 1); //0
+        int32[0] = i;
+        return float32[0];
+    }
 
     /**
      * 从字符串中获取Byte数组

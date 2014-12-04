@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title></title>
+    <link rel="stylesheet" href="../src/style/jquery.istockanalysis.css"/>
+    <script src="../src/script/jquery-1.11.1.js"></script>
+    <script src="../src/script/jquery.jhss.tool.js"></script>
+    <script src="../src/script/jquery.istockanalysis.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.galhttprequset('http://quote.youguu.com/quote/stocklist/home2', {}, {
+                succeed: function (data) {
+                    $('#zdup').analysisStockSummary(data.zdup, {
+                        titles: ['股票名称', '最新价', '涨跌幅'],
+                        configs: [{key: 'curprice'}, {
+                            key: 'dataper',
+                            format: formatProfitPercent
+                        }],
+                        flag: 'dataper'
+                    });
+                    $('#zddown').analysisStockSummary(data.zddown, {
+                        titles: ['股票名称', '最新价', '涨跌幅'],
+                        configs: [{key: 'curprice'}, {
+                            key: 'dataper',
+                            format: formatProfitPercent
+                        }],
+                        flag: 'dataper'
+                    });
+                    $('#hs').analysisStockSummary(data.hs, {
+                        titles: ['股票名称', '最新价', '换手率'],
+                        configs: [{key: 'curprice'}, {
+                            key: 'dataper',
+                            format: formatPercent
+                        }]
+                    });
+                    $('#hs').analysisStockSummary(data.zf, {
+                        titles: ['股票名称', '最新价', '振幅'],
+                        configs: [{key: 'curprice'}, {
+                            key: 'dataper',
+                            format: formatPercent
+                        }]
+                    });
+                    $('#newstock').analysisStockSummary(data.newstock, {
+                        titles: ['股票名称', '发行总数(万股)', '申购日期'],
+                        configs: [{
+                            key: 'issueshare', format: function (val) {
+                                return (val / 10000).toFixed(0);
+                            }
+                        }, {
+                            key: 'applydate',
+                            format: function (val) {
+                                return val;
+                            }
+                        }]
+                    });
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            }).requestPacket();
+        });
+
+        function formatProfitPercent(val) {
+            var value = formatPercent(val);
+            if (val > 0) {
+                value = '+' + value;
+            }
+            return value;
+        }
+
+        function formatPercent(val) {
+            var value = val.toFixed(2);
+            return value + '%';
+        }
+
+    </script>
+</head>
+<body>
+<div id="zdup"></div>
+<div id="zddown"></div>
+<div id="hs"></div>
+<div id="newstock"></div>
+</body>
+</html>

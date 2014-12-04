@@ -2,11 +2,32 @@ html, body {
     width: 100%;
     margin: 0;
     padding: 0;
+    color: #3d3d3d;
+    font-family: Microsoft YaHei, simhei, SimSun, sans-serif;
 }
 
+ul, p {
+    margin: 0;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+.up {
+    color: #dd4b39 !important;;
+}
+
+.down {
+    color: #3d9400 !important;
+}
+
+/**聊股样式*/
 div.istock {
     width: 100%;
-    font: 16px/21px "微软雅黑";
+    font-size: 16px;
+    line-height: 21px;
     padding-left: 10px;
     position: relative;
     clear: both;
@@ -61,4 +82,62 @@ div.istock ul li.font {
 div.istock ul a {
     color: #ff9c00;
     text-decoration: none;
+}
+
+/**股票缩略信息样式*/
+.stocksummary {
+    width: 100%;
+}
+
+.stocksummary ul {
+    width: 100%;
+    float: left;
+}
+
+.stocksummary ul li {
+    width: 100%;
+    font-size: 15px;
+    border-bottom: 1px solid #e3e3e3;
+    float: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+}
+
+.stocksummary ul.title {
+    background-color: #e9eaec;
+    padding: 1px 0;
+}
+
+.stocksummary ul.title li {
+    width: 33%;
+    float: left;
+    text-align: center;
+}
+
+.stocksummary ul li p {
+    width: 33%;
+    float: left;
+    text-align: center;
+    line-height: 34px;
+    font-weight: bold;
+}
+
+.stocksummary ul li p:first-child {
+    line-height: 16px;
+}
+
+.stocksummary span {
+    display: block;
+    width: 100%;
+}
+
+.stocksummary span.stockname {
+    font-size: 14px;
+    padding-bottom: 2px;
+}
+
+.stocksummary span.stockcode {
+    color: #f78d05;
+    font-size: 12px;
+    font-weight: normal;
 }

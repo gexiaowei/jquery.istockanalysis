@@ -217,4 +217,42 @@
             }
         }
     };
+
+    $.fn.analysisStockSummary = function (datas, params) {
+        this.addClass('stocksummary');
+        if (params.titles) {
+            var titlebar = $('<ul/>', {'class': 'title'}).appendTo(this);
+            $(params.titles).each(function (i, title) {
+                $('<li/>').appendTo(titlebar).text(title);
+            });
+        }
+        var stocklist = $('<ul/>').appendTo(this);
+        $(datas).each(function (i, data) {
+            var stockitem = $('<li/>').appendTo(stocklist);
+            $('<p/>').append($('<span/>', {class: 'stockname'}).text(data.name))
+                .append($('<span/>', {class: 'stockcode'}).text(data.code.substr(2)))
+                .appendTo(stockitem);
+
+            var className = ''
+
+            if (params.flag) {
+                if (data[params.flag] > 0) {
+                    className = 'up';
+                } else if (data[params.flag] < 0) {
+                    className = 'down';
+                }
+            }
+
+            $(params.configs).each(function (i, config) {
+                var value = data[config.key];
+                if (config.format) {
+                    value = config.format(value);
+                } else {
+                    value = value.toFixed(2);
+                }
+                $('<p/>', {class: className}).appendTo(stockitem).text(value);
+            });
+        });
+    };
+
 })(jQuery);
